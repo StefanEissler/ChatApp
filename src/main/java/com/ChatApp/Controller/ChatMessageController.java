@@ -32,7 +32,8 @@ public class ChatMessageController {
 
     @GetMapping("/messages")
     public List<ChatMessage> getMessageList(){
-        return chatMessageService.getMessages();
+        List<ChatMessage> list = chatMessageService.getMessages();
+        return list;
     }
 
 }

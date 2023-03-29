@@ -1,28 +1,27 @@
 var stompClient = null;
 
-var messages = null;
-
 $(document).ready(
-    $("#card-body").hide()
+    $("#card-footer").hide()
 )
 
 $(document).ready(function(){
     $("#connectButton").click( function(){
         if(stompClient == null) {
             connect();
-            $("#card-body").show();
+            $("#card-footer").show();
             document.getElementById("connectButton").value = "Disconnect";
         }else {
             disconnect();
-            $("#card-body").hide()
-
+            $("#card-footer").hide()
             document.getElementById("connectButton").value = "Connect";
         }
     });
+
     $("#messageform").submit(function (event) {
         sendMessage();
         event.preventDefault();
     });
+
 });
 
 function disconnect() {
@@ -32,7 +31,6 @@ function disconnect() {
     setConnected(false);
     console.log("Disconnected");
 }
-
 
 function connect() {
     var socket = new SockJS('/ws');
@@ -45,16 +43,14 @@ function connect() {
     });
 }
 
+function sendMessage() {
+    stompClient.send("app/chat/", {}, JSON.stringify({'content':$("#messages").val()}));
+}
+
 function showMessage(message){
     $("messages").append("<tr><td>" + message + "</td></tr>")
 }
 
 function getMessages(){
-
-}
-
-
-
-function sendMessage() {
-    stompClient.send("app/chat/", {}, {'content': $("#ChatMessage"), 'chatId': '1', 'userId': '1'});
+    $.get("http://localhost:8080/messages", {}, JSON.stringify(message));
 }
