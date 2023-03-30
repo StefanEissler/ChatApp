@@ -1,27 +1,21 @@
 var stompClient = null;
 
 $(document).ready(
-    $("#card-footer").hide()
-)
+    function(){
+        $("#connectButton").click( function(){
+            if(stompClient == null) {
+                connect();
+                document.getElementById("connectButton").value = "Disconnect";
+            }else {
+                disconnect();
+                document.getElementById("connectButton").value = "Connect";
+            }
+        });
 
-$(document).ready(function(){
-    $("#connectButton").click( function(){
-        if(stompClient == null) {
-            connect();
-            $("#card-footer").show();
-            document.getElementById("connectButton").value = "Disconnect";
-        }else {
-            disconnect();
-            $("#card-footer").hide()
-            document.getElementById("connectButton").value = "Connect";
-        }
-    });
-
-    $("#messageform").submit(function (event) {
-        sendMessage();
-        event.preventDefault();
-    });
-
+        $("#messageform").submit(function (event) {
+            sendMessage();
+            event.preventDefault();
+        });
 });
 
 function disconnect() {
@@ -37,18 +31,21 @@ function connect() {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/messages ', function (message) {
-            showMessage(JSON.parse(message));
+        stompClient.subscribe('/topic/messages', function (data) {
+            showMessage(data);
         });
     });
 }
 
 function sendMessage() {
-    stompClient.send("app/chat/", {}, JSON.stringify({'content':$("#messages").val()}));
+    stompClient.send("/app/chat", {}, 
+        JSON.stringify({
+            "content": $("#ChatMessage").val()
+        }));
 }
 
-function showMessage(message){
-    $("messages").append("<tr><td>" + message + "</td></tr>")
+function showMessage(data){
+    $("#messages").append("<tr><td>" + $(data.content) + "</td><td>" + $(data.timestamp) + "</td></tr>");
 }
 
 function getMessages(){
