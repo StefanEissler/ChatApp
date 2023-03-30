@@ -1,15 +1,11 @@
-var stompClient = null;
+let stompClient = null;
 
 $(document).ready(
     function(){
         $("#connectButton").click( function(){
-            if(stompClient == null) {
-                connect();
-                document.getElementById("connectButton").value = "Disconnect";
-            }else {
-                disconnect();
-                document.getElementById("connectButton").value = "Connect";
-            }
+            connect();
+            document.getElementById("connectButton").value = "Disconnect";
+            this.connected = true;
         });
 
         $("#messageform").submit(function (event) {
@@ -17,14 +13,6 @@ $(document).ready(
             event.preventDefault();
         });
 });
-
-function disconnect() {
-    if (stompClient !== null) {
-        stompClient.disconnect();
-    }
-    setConnected(false);
-    console.log("Disconnected");
-}
 
 function connect() {
     var socket = new SockJS('/ws');
@@ -46,8 +34,4 @@ function sendMessage() {
 
 function showMessage(data){
     $("#messages").append("<tr><td>" + $(data.content) + "</td><td>" + $(data.timestamp) + "</td></tr>");
-}
-
-function getMessages(){
-    $.get("http://localhost:8080/messages", {}, JSON.stringify(message));
 }

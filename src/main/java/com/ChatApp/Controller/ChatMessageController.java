@@ -28,11 +28,4 @@ public class ChatMessageController {
         return chatMessageService.sendMessage(chatMessageDto);
     }
 
-
-    @GetMapping("/messages")
-    public List<ChatMessage> getMessageList(){
-        List<ChatMessage> list = chatMessageService.getMessages();
-        return list;
-    }
-
 }
