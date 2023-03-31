@@ -1,11 +1,11 @@
 let stompClient = null;
+let messageList = new Array();
 
+// Button Action Listener
 $(document).ready(
     function(){
         $("#connectButton").click( function(){
             connect();
-            document.getElementById("connectButton").value = "Disconnect";
-            this.connected = true;
         });
 
         $("#messageform").submit(function (event) {
@@ -14,6 +14,7 @@ $(document).ready(
         });
 });
 
+// Verbindung mit Websocket
 function connect() {
     var socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
@@ -25,6 +26,7 @@ function connect() {
     });
 }
 
+// Nachricht wird an Websocket verschickt
 function sendMessage() {
     stompClient.send("/app/chat", {}, 
         JSON.stringify({
@@ -32,6 +34,13 @@ function sendMessage() {
         }));
 }
 
+// Anzeigen der Nachirchten 
 function showMessage(data){
-    $("#messages").append("<tr><td>" + $(data.content) + "</td><td>" + $(data.timestamp) + "</td></tr>");
+    messageList.push(data);
+    let text = "<ul>";
+    for(let i = 0; i < messageList.length; i++){
+        text += "<li>" + messageList[i] + "</li>";
+    }
+    text += "</ul>";
+    document.getElementById("messages").innerHTML = text; 
 }
