@@ -12,6 +12,8 @@ $(document).ready(
                 $(this).text("Disconnect");
                 connected = true;
             }else{
+                $(this).toggleClass("btn btn-primary");
+                $(this).text("Connect");
                 disconnect();
                 connected = false;
             }
@@ -37,7 +39,6 @@ function connect() {
 }
 
 function disconnect(){
-    socket.disconnect();
     stompClient.disconnect();
 }
 
