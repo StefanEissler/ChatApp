@@ -4,13 +4,23 @@ let messageList = new Array();
 // Button Action Listener
 $(document).ready(
     function(){
+        let connected = false;
         $("#connectButton").click( function(){
-            connect();
+            if(connected === false){
+                connect();
+                $(this).toggleClass("btn btn-danger");
+                $(this).text("Disconnect");
+                connected = true;
+            }else{
+                disconnect();
+                connected = false;
+            }
         });
 
         $("#messageform").submit(function (event) {
             sendMessage();
             event.preventDefault();
+            this.reset();
         });
 });
 
@@ -24,6 +34,11 @@ function connect() {
             showMessage(data);
         });
     });
+}
+
+function disconnect(){
+    socket.disconnect();
+    stompClient.disconnect();
 }
 
 // Nachricht wird an Websocket verschickt
